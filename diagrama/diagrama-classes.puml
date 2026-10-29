@@ -1,0 +1,51 @@
+@startuml diagrama-classes
+title Mediator - Central de Atendimento Interno
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide empty members
+class Colaborador {
+  - nome : String
+  + Colaborador(nome : String)
+  + getNome() : String
+  + abrirChamado(setor : String, mensagem : String) : String
+  + abrirUrgencia(setor : String, mensagem : String) : String
+}
+class Enfermeiro
+class Administrativo
+class CentralAtendimento <<singleton>> {
+  - {static} instancia : CentralAtendimento
+  - CentralAtendimento()
+  + {static} getInstancia() : CentralAtendimento
+  + encaminharChamado(nomeSetor : String, mensagem : String) : String
+  + encaminharUrgencia(nomeSetor : String, mensagem : String) : String
+  - buscarSetor(nomeSetor : String) : Setor
+  - encaminhar(nomeSetor : String, resposta : String) : String
+}
+interface Setor {
+  + receberChamado(mensagem : String) : String
+  + receberUrgencia(mensagem : String) : String
+}
+class SuporteTI <<singleton>> {
+  + {static} getInstancia() : SuporteTI
+}
+class Manutencao <<singleton>> {
+  + {static} getInstancia() : Manutencao
+}
+class RecursosHumanos <<singleton>> {
+  + {static} getInstancia() : RecursosHumanos
+}
+
+Colaborador <|-- Enfermeiro
+Colaborador <|-- Administrativo
+Colaborador ..> CentralAtendimento : solicita
+CentralAtendimento --> Setor : encaminha
+Setor <|.. SuporteTI
+Setor <|.. Manutencao
+Setor <|.. RecursosHumanos
+@enduml
